@@ -1,4 +1,8 @@
 <?php
+//définition type retour
+header('Content-Type: text/event-stream');
+header('Cache-Control: no-cache');
+
 //définition des variables / constantes
 $nombre_compose = array();
 $chiffres_romains = array
@@ -40,12 +44,12 @@ function convert($nbrs){
                 $roman_number .= $chiffres_romains[$nbr];
                 break;
             }
-            
+
             //cas : apparition lettre romaine +3 fois
             if($quotient>3) {
                 continue;
             }
-            
+
             //cas : nombre rond
             if($modulo == 0) {
                 $roman_number .= str_repeat($rom, $quotient);
@@ -68,30 +72,12 @@ function convert($nbrs){
 }
 
 //récupération ; traitement des entrées utilisateur ; réponse -> front
-if(isset($_POST['nombreD']) && $_POST['nombreD'] > 0 && $_POST['nombreD'] < 100)
+if(isset($_GET['nombreD']) && $_GET['nombreD'] > 0 && $_GET['nombreD'] < 100)
 {
-    $nombre_decimal = $_POST['nombreD'];
+    $nombre_decimal = $_GET['nombreD'];
     $nombre_romain = convert(decomposer($nombre_decimal));
-    echo json_encode($nombre_romain);
-
-// Tests
-//    echo "
-//            <hr> 
-//            <p>Nombre décimal : $nombre_decimal
-//            <br/>
-//            Nombre romain : $nombre_romain
-//            </p>";
-//
-////            exit;
-//
-//    echo "<br/><br/>";
-//            for($ind=1;$ind<101;$ind++) {
-//                echo "<h3> DIGIT -- $ind </h3>";
-//                $cr = convert(decomposer($ind));
-////                var_dump($nombre_compose);
-////                var_dump($cr);
-//                echo "<br/> Conversion -- $cr <br/>";
-//            }
-
+    echo "data: ".$nombre_romain."\n\n";
+    flush();
 }
+
 ?>
